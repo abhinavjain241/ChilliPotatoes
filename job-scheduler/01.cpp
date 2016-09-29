@@ -35,44 +35,74 @@ bool operator<(const job& a, const job& b) {
 
 template<typename T> void print_queue(T& q) {
     while(!q.empty()) {
-        std::cout << q.top().pid << " ";
         std::cout << q.top().timestamp << " ";
+        std::cout << q.top().pid << " ";
         std::cout << q.top().origin << " ";
         std::cout << q.top().instructions << " ";
         std::cout << q.top().importance << " ";
+        std::cout << q.top().duration << " ";
+        std::cout << std::endl;
         q.pop();
     }
-    std::cout << '\n';
 }
 
+template<typename T> void printJobs(T& q, int num) {
+    while(num--) {
+    	std::cout << "job";
+        std::cout << q.top().timestamp << " ";
+        std::cout << q.top().pid << " ";
+        std::cout << q.top().origin << " ";
+        std::cout << q.top().instructions << " ";
+        std::cout << q.top().importance << " ";
+        std::cout << q.top().duration << " ";
+        std::cout << std::endl;
+        q.pop();
+    }
+}
+
+inline bool isInteger(const std::string & s)
+{
+   if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
+   char * p ;
+   strtol(s.c_str(), &p, 10) ;
+   return (*p == 0) ;
+}
 
 int main(int argc, char const *argv[]) {
 	string line;
 	vector<string> input;
-	unsigned int numCPU;
+	unsigned int numCPU, freeCPU, assigned;
 	priority_queue<job> jobs;
 	while(getline(cin, line)) {
 		cout << line << endl;
 		input = split(line, ' ');
 		if(input[0] == "cpus") {
-			numCPU = std::stoi(input[1]);
+			numCPU = atoi(input[1].c_str());
+			freeCPU = numCPU;
 		}
 		if(input[0] == "job") {
 			job newJob;
-			newJob.timestamp = std::stoi(input[1]);
-			newJob.pid = std::stoi(input[2]);
+			newJob.timestamp = atoi(input[1].c_str());
+			newJob.pid = atoi(input[2].c_str());
 			newJob.origin = input[3];
-			newJob.instructions = std::stoi(input[4]);
-			newJob.duration = std::stoi(input[5]);
+			newJob.instructions = input[4];
+			newJob.importance = atoi(input[5].c_str());
+			newJob.duration = atoi(input[6].c_str());
 			jobs.push(newJob);
 		}
 		if(input[0] == "assign") {
-
+			ull timestamp = atoi(input[1].c_str());
+			unsigned int k = atoi(input[2].c_str());
+			assigned = std::min<unsigned long>(std::min(freeCPU, k), jobs.size());
+			freeCPU = freeCPU - assigned;
+			printJobs(jobs, assigned);
 		}
 		if(input[0] == "query") {
-
+			if(isInteger(input[2]))
+			assigned = std::min<unsigned long>(atoi(input[2].c_str()), jobs.size());
+			printJobs(jobs, assigned);
 		}
 	}
-
+	// print_queue(jobs);
 	return 0;
 }
