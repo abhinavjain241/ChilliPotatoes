@@ -1,0 +1,10 @@
+cpus 10
+job 1 1 orderProcessor BExvg 1 1
+job 1 2 orderProcessor XfGie 2 2
+assign 2 1
+job 10 1 marketDataProcessor QfyIRX 100 100
+assign 10 2
+query 1 2
+query 2 1
+query 11 1
+query 3 orderProcessor
